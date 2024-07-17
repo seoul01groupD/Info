@@ -76,6 +76,31 @@
 * `range(A,B,C)` A부터 B-1까지 간격 C인 정수들로 이루어진 range객체 생성
 *  `reversed(range())` range를 거꾸로 읽음
 
+# 조건문
+## 기본형
+``` python
+if 조건1:
+    문장
+elif 조건2:
+    문장
+...
+else:
+    문장
+```
+## match-case구문
+``` python
+match n:
+    case 조건1:
+        문장
+    case 조건2:
+        문장
+    ...
+    case _:
+        문장
+```
+- n이 속한 조건일 때 문장을 실행
+- _는 아무값이나 상관없다는 뜻
+- 조건을 여러개로 하고 싶을 때는 or가 아닌 \|을 사용해야함
 # 반복문
 ## for 반복문
 ``` python 
@@ -222,9 +247,161 @@ dict(리스트명)
 - `{요소들}` 로도 집합 선언 가능
 - `set(리스트)` 
 ## 집합의 기본 연산
+
 | 함수  | 기능 |
 | :-------------: | :-------------: |
-| `집합1`  | |
+| `집합1&집합2` | 집합1과 집합2의 교집합 리턴 (&대신 intersection 적어도 동일)|
+|`집합1\|집합2`| 집합1과 집합2의 합집합 리턴 ( \|대신 union 적어도 동일)|
+|`집합1-집합2`|집합1 차집합 집합2(-대신 difference도 동일)|
+
+## 집합 관련 함수
+| 함수  | 기능 |
+| :-------------: | :-------------: |
+| `집합명.add(a)` | 집합에 a추가|
+|`집합명.update(리스트명)`|집합에 해당 리스트 원소들 추가|
+|` a in 집합명`|a가 집합에 있으면 True, 아니면 False 리턴|
+|`집합명.remove(원소)`| 해당 원소를 집합에서 제거 (만약 원소가 집합에 없다면 오류)|
+
+# 함수
+* 기본지정법
+``` python 
+def 함수명(매개변수들):  
+    문장
+``` 
+## 다양한 인자 종류
+1. 위치 인자
+2. 기본 인자 값
+3. 키워드 인자
+4. 임의의 인자 목록
+5. 임의의 키워드 인자 목록
+
+### Positional Arguments (위치인자)
+- 함수 호출 시 매개변수와 인자의 위치에 따라 인자값이 매개변수에 할당되는 인자
+- <span style='color:crimson;'>위치인자는 함수 호출 시 반드시 값을 전달해야 함</span>
+
+    ```python
+    def greet(name, age):
+        print(f'안녕하세요, {name}님! {age}살이시군요.')
+
+
+    greet('Alice', 25) # 안녕하세요, Alice님! 25살이시군요
+    ```
+### Default Argument Values (기본 인자 값)
+- 함수 정의에서 매개변수에 기본 값을 할당하는 것
+- 함수 호출 시 인자를 전달하지 않으면, 기본값이 매개변수에 할당됨
+
+    ```python
+    def greet(name, age=30):
+        print(f'안녕하세요, {name}님! {age}살이시군요.')
+
+
+    greet('Bob') # 안녕하세요, Bob님! 30살이시군요.
+    greet('Charlie', 40) # 안녕하세요, Charlie님! 40살이시군요.
+    ```    
+###  Keyword Arguments (키워드 인자)
+- 함수 호출 시 매개변수명과 함께 인자값을 전달하는 인자
+- 매개변수와 인자를 일치시키지 않고, 특정 매개변수에 값을 할당할 수 있음
+- 인자의 순서는 중요하지 않으며, 인자의 이름을 명시하여 전달
+- <span style='color:crimson;'>단, 호출 시 키워드 인자는 위치 인자 뒤에 위치해야 함</span>
+
+    ```python
+    def greet(name, age):
+        print(f'안녕하세요, {name}님! {age}살이시군요.')
+
+
+    greet(name='Dave', age=35)  # 안녕하세요, Dave님! 35살이시군요.
+    greet(age=35, 'Dave')  #  positional argument follows keyword argument
+    ```
+### Arbitrary Argument Lists (임의의 인자 목록)
+- 정해지지 않은 개수의 인자를 처리하는 인자
+- 함수 정의 시 매개변수 앞에 <span style='color:red;'>`‘*’`</span>를 붙여 사용하며, 여러 개의 인자를 tuple로 처리
+
+    ```python
+    def calculate_sum(*args):
+        print(args)
+        total = sum(args)
+        print(f'합계: {total}')
+
+
+    """
+    (1, 2, 3)
+    합계: 6
+    """
+    calculate_sum(1, 2, 3)
+    ```
+### Arbitrary Keyword Argument Lists (임의의 키워드 인자 목록)
+- 정해지지 않은 개수의 키워드 인자를 처리하는 인자
+- 함수 정의 시 매개변수 앞에 <span style='color:red;'>`‘**’`</span>를 붙여 사용하며, <br>여러 개의 인자를 dictionary로 묶어 처리
+
+    ```python
+    def print_info(**kwargs):
+        print(kwargs)
+
+
+    print_info(name='Eve', age=30) # {'name': 'Eve', 'age': 30}
+    ```
+### 함수 인자 권장 작성순서
+- 위치 -> 기본 -> 가변 -> 가변 키워드
+- 호출 시 인자를 전달하는 과정에서 혼란을 줄일 수 있도록 함
+- <span style='color:crimson;'>단, 모든 상황에 적용되는 절대적인 규칙은 아니며, 상황에 따라 유연하게 조정될 수 있음</span>
+
+    ```python
+    def func(pos1, pos2, default_arg='default', *args, **kwargs):
+        # ...
+    ```
+
+#### 인자의 모든 종류를 적용한 예시
+```python
+def func(pos1, pos2, default_arg='default', *args, **kwargs):
+    print('pos1:', pos1)
+    print('pos2:', pos2)
+    print('default_arg:', default_arg)
+    print('args:', args)
+    print('kwargs:', kwargs)
+
+func(1, 2, 3, 4, 5, 6, key1='value1', key2='value2')
+
+"""
+pos1: 1
+pos2: 2
+default_arg: 3
+args: (4, 5, 6)
+kwargs: {'key1': 'value1', 'key2': 'value2'}
+"""
+```
+## 람다로 함수 선언
+`함수명=lambda 매개변수:리턴값`으로 선언 가능
+### 예시
+`add= lambda x,y,z:x+y+z`
+
+## 함수 관련 유의점
+- 함수로 전역 변수를 불러올 수는 있으나 함수 내에서 전역 변수를 수정해도 반영되지 않는다.
+- 전역 변수를 변형시키기 위해서는 `global`로 호출해야 한다.
+- 하지만 리스트의 경우 함수 내에서 전역 리스트의 요소를 변경하면 변경점이 반영된다.
+# 예외 처리
+``` python
+try:
+    예외발생 가능 코드
+except 예외타입:
+    예외발생시 실행 코드
+else:
+    예외가 발생하지 않았을 때 실행할 코드
+finally:
+    무조건 실행할 코드
+```
+## 활용 및 유의점
+- else문까지 쓰는 경우 예외 발생 가능성 있는 코드만 try 구문 부분에 넣고 나머지는 else로 뺌
+- except에 있는 예외타입 외에 생기는 경우에는 프로그램에 에러가 생기고 끝남
+- except는 여러 개일 수 있음
+- except 실행코드에 pass만 넣어 그냥 프로그램이 실행되게 할 수도 있음
+- try 구문은 단독으로 사용할 수 없으며 반드시 except 구문이나 finally 구문과 함께 사용해야 함
+- else구문은 반드시 except 뒤에 사용
+- 사용가능한 조합: try+except, try+except+else, try+except+finally, try+except+else+finally, try+finally
+- try 구문 중간에서 return으로 탈출해도 finally는 실행됨
+- `except 예외의 종류 as 예외 객체를 활용할 변수 이름` 으로 예외 발생 시 예외 정보를 저장할 수 있음. Exception의 경우 모든 예외를 받아들임 (type에 예외 종류가 들어가고 값에는 예외가 발생한 원인 설명문이 들어감) 
+- except 예외 종류를 나열하고 혹시 모르니 마지막엔 Exception으로 처리해줘야 프로그램이 죽지 않음
+- raise 예외 객체: 예외를 강제로 발생시킴-프로그램 개발 상태에서 미구현 부분에 일부러 예외를 발생시켜 까먹지 않게 함
+
 # Deque
 * `from collections import deque` 후 사용
 * `a=deque(리스트명)`으로 정의
@@ -244,10 +421,11 @@ dict(리스트명)
 ## heapq 사용
 - `import heapq`를 통해 최소힙 기능을 사용할 수 있음
 - 관련 함수 
-| 함수  | 기능 |
+
+| 함수 | 기능 |
 | :-------------: | :-------------: |
 | `heapq.heappush(heap명,item)`  | item을 heap에 추가 |
-|`heapq.heappop(heap이름)`|heap에서 가장 작은 원소를 pop 후  리턴. heap이 비어있으면 IndexError|
+| `heapq.heappop(heap이름)`|heap에서 가장 작은 원소를 pop 후  리턴. heap이 비어있으면 IndexError| 
 |`heapq.heapify(리스트명)`|리스트를 heap으로 변환|
 |`heapq.nlargest(n,heap명)`|heap내에서 1~n번째로 큰 수가 리스트로 반환됨|
 
@@ -259,3 +437,166 @@ for item in d:
     heapq.heappush(max_heap,(-item,item))
 ```
 하고 최대힙 접근 시 item[1]로 접근
+
+# 파일의 입출력 (수정필요)
+## 기본 형식
+`<filevar>=open(<name>,<mode>)` 
+## <mode>
+### 'w' (write)
+- 동일 이름이 존재하면 파일 내용이 없어지고 새로운 파일로 시작 아니면 새로 시작
+- 파일명의 경우 기본적으로 상대경로이며, 절대경로로 생성하고 싶으면 파일 경로를 파일명 앞에 표시해야 한다. ex C:/doit/새파일.txt( \/도 되고\\\\도 되고 문자열앞에 r문자 붙여서 사용)
+### 'r' (read)
+### 'a' (append)
+### 유의 사항
+- 보통 한글은 지원안되므로 파일 열 때 encoding="UTF-8"을 붙이면 지원됨
+- 다 쓰고 파일은 파일명.close()로 닫아줘야 함
+``` python
+with open(문자열:파일경로, 문자열:모드) as 파일 객체:
+    문장
+```
+- with 구문 종료 시 파일을 자동으로 닫음
+- <file>.read(): 파일의 전체 내용물이 리턴됨 
+- <file>.readline(): 파일의 다음 라인을 리턴함
+- <file>.readlines(): 파일의 남은 라인들을 리스트로 리턴함
+- <file>.write(텍스트): 텍스트를 파일에 적음
+``` python
+for 한줄을나타내는 문자열 in 파일객체:
+	처리
+```
+- 데이터를 한줄씩 읽어들임
+- 인터넷상의 이미지를 바이너리 데이터로 불러오기 위해서는 파일 열 때 뒤에 b붙여야 함
+
+# 제너레이터
+- 이터레이터를 직접 만들 때 사용하는 코드
+``` python 
+def 함수명()
+	내용
+	yield 1
+	내용
+	yield 2
+```
+- 이런 식으로 되어 있으면 next로 함수를 실행시킬 수 있다. 첫 yield까지를 처음에 실행하고 1이 리턴되고 그 다음엔 두 번째 yield까지 실행되고 2가 리턴됨
+- 예시
+``` python
+def test():
+    print("A")
+    yield 1
+    print("B")
+    yield 2
+    print("C")
+output=test()
+print("D")
+a=next(output)
+print(a)
+print("E")
+b=next(output)
+print(b)
+``` 
+- 출력 
+``` python
+D
+A
+1
+E
+B
+2
+```
+- 만약 next()함수 호출 후 yield 만나지 못하고 함수가 끝나면 Stopiteration 예외 발생
+
+# 클래스 (수정필요)
+## 클래스의 당위성
+- 객제지향프로그래밍: 객체를 우선으로 생각하여 프로그래밍하는 것
+- 클래스 기반의 객체 지향 프로그래밍 언어는 클래스를 기반으로 객체 만들고 객체를 우선으로 생각하여 프로그래밍 함
+- 객체: 여러 가지 속성 가질 수 있는 모든 대상
+- 클래스: 객체를 조금 더 효율적으로 생성하기 위해 만들어진 구문
+
+## 클래스의 선언
+``` python 
+class 클래스명:
+	클래스 변수=값
+	def __init__(self,추가 매개변수):
+		클래스 내용
+	def 메소드명(self,추가 매개변수):
+		함수내용
+인스턴스명(변수명)=클래스명() # 인스턴스는 생성자를 사용하여 클래스 기반으로 만들어진 객체, 생성자는 클래스 이름과 같은 함수
+```
+## 클래스 메소드
+- 클래스 내부 함수는 첫 매개변수로 반드시 self 입력해야 함(관용적으로 self로 함)
+- self는 ‘자기 자신’나타내는 딕셔너리, self.식별자 형태로 접근
+### 클래스가 가지는 기본함수
+- `isinstance(인스턴스,클래스명)` 인스턴스가 클래스에서 만들어졌는지 확인
+- `__<이름>__()` 특수한 상황에 자동으로 호출되도록 만들어짐
+- `__str__()` str함수가 호출되면 자동 호출됨
+- eg, ne, gt, ge, lt, le 등의 크기 비교 특수 메소드도 존재
+
+## 프라이빗 변수
+- 변수를 마음대로 사용하는 것 방지
+- __변수명 형태로 인스턴스 변태로 인스턴스 변수 이름 선언 -객체외부에서 접근 불가
+- 외부에서 접근하려고 하면 error발생
+- 프라이빗 변수에 접근하거나 변경하기 위해서는 객체 내에서 함수를 지정해야 함
+- 관례상 get_변수명, set_변수명으로 이름 지음
+- 각각 변수를 돌려주거나, 변수를 객체 내에서 변경하는 함수임
+``` python
+def get_radius(self):
+	return self.__radius
+def set_radius(self,value):
+	self.__radius=value
+``` 
+- 파이썬에서 이런 기능을 기본적으로 지원해줌
+``` python 
+@property
+def 변수명(self):
+	return self.__radius
+@변수명.setter(self,value)"
+	내용
+```
+
+## 상속
+- 다른 누군가가 만든 기본 형태에 내가 원하는 것만 교체
+- 다중상속: 다른 누군가가 만든 형태들을 조립하여 내가 원하는 것을 만드는 것
+- 이 때 기반이 되는 것을 부모, 기반으로 생성된 것을 자식이라 부름
+``` python
+class 자식클래스명(부모클래스명):
+    내용
+```
+	하면 됨
+- 자식클래스명.변수명 했을 때 자식클래스에 변수가 없어도 부모클래스에 있다면 그걸 가져옴
+
+## 예외클래스 만들기
+``` python
+class 클래스명(Exception):
+	def __init__(self):
+		Exception.__init__(self)
+raise CustomException
+```
+- 새로운 종류의 예외를 추가할 수 있음
+
+# 모듈
+- 코드를 분리하고 공유하는 기능
+- 표준 모듈: 파이썬 기본 내장 모듈
+- 외부 모듈: 사람들이 만들어 공개한 모듈
+- 라이브러리: 정상적인 제어하는 모듈 (개발자가 모듈 기능을 호출하는 형태의 모듈)
+- 프레임워크: 제어 역전이 발생하는 모듈 (모듈이 개발자의 코드를 실행함)
+## 모듈 불러오기
+1. `import 모듈명` 이렇게 불러온 모듈은 내부 함수나 변수를 모두 사용할 수 있으나 `모듈명.함수, 모듈명.변수`로 호출해야 함   
+2. `from 모듈명 import 함수 or 변수명` 부른 함수나 변수명만 사용할 수 있으나 별도로 모듈명을 앞에 붙이지 않아도 된다.
+3. `from 모듈명 import *` 모든 함수를 불러오고 이름을 안 붙여도 됨
+4. `import 모듈명 as 사용하고자 하는 식별자` 로 모듈명을 다르게 사용 가능
+5. 많은 외부 모듈들은 cmd창에 `pip install 모듈명`을 통해 다운 가능
+
+## 모듈 생성법
+- 모듈로 하려는 파이썬 파일을 생성하고 내부에서 변수, 함수를 정의하면 됨
+- 이를 모아 패키지로 만들기 위해서는 한 폴더(폴더명은 패키지명) 내부에 여러 모듈 파일을 넣어두면됨 그리고 부를때는 import 패키지명.모듈명 으로 부르면 됨
+
+## 모듈관련 정보
+### `__name__`
+- 프로그램이 돌아가는 위치 이를 이용하여 파일이 라이브러리로 쓸 경우 안돌아가고 main()으로서 쓸 경우에만 돌아가게 설정할 수 있음(메인 내부에서는 __main__이 출력됨)
+- 따라서 모듈내에서 if __name__=="__main__:라는 조건문은 그 모듈이 모듈로서 동작할 때는 동작하지 않고 메인으로 동작할 때만 동작함
+### `__init__.py`파일 
+패키지 읽을 때 어떤 처리를 수행하거나 패키지 내부 모듈을 한꺼번에 가져오고 싶을 때 사용-패키지 폴더 내부에 이 파일을 추가시 가장 먼저 실행함
+### `__all__=[모듈들]`
+- `import 패키지명 import *`했을 때 all에 있는 모듈들을 불러옴
+
+## 몇몇 모듈들
+### 내부 모듈
+### 외부 모듈
